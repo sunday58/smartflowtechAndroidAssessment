@@ -4,14 +4,16 @@ package com.golvia.smartflowtechandroidassessment.data.db.database
  * davidsunday
  */
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponseItem
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface InventoryDao {
 
-    @Query("SELECT * FROM inventory_items")
+    @Query("SELECT * FROM inventory_items ORDER BY id DESC")
     fun getAllItems(): List<InventoryResponseItem>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -28,4 +30,7 @@ interface InventoryDao {
 
     @Query("SELECT * FROM inventory_items WHERE title LIKE :query")
     fun searchItemsByName(query: String): List<InventoryResponseItem>
+
+    @Query("SELECT * FROM inventory_items WHERE id = :itemId")
+    fun getItemById(itemId: String): InventoryResponseItem
 }

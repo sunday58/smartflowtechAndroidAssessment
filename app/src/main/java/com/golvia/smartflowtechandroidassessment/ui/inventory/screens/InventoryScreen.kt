@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +39,9 @@ fun InventoryScreen(
     onItemClick: (Int) -> Unit,
     onAddItemClick: () -> Unit,
 ){
+    LaunchedEffect(Unit) {
+        viewModel.getInventoryItems()
+    }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -45,7 +49,7 @@ fun InventoryScreen(
             TopAppBar(
                 title = { Text(stringResource(id = R.string.smartflow_inventory_system)) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = MaterialTheme.colorScheme.background,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
@@ -70,15 +74,15 @@ fun InventoryScreen(
                     }
 
                     is UiState.Success -> {
-                        val articles = state.data
-                        if (articles.isNullOrEmpty()) {
+                        val inventoryData = state.data
+                        if (inventoryData.isNullOrEmpty()) {
                             EmptyStateMessage(
                                 message = stringResource(R.string.no_inventory_item_found_please_add_an_item),
                                 onRetryClick = { viewModel.getInventoryItems() }
                             )
                         } else {
                                 InventoryItem(
-                                    inventoryItem = articles,
+                                    inventoryItem = inventoryData,
                                     onSearch = { viewModel.searchInventory(it) },
                                     onItemClick = { onItemClick(it) },
                                     onFabClick = onAddItemClick
@@ -97,6 +101,8 @@ fun InventoryScreen(
                     is UiState.SuccessUpdate -> {
                         Log.d("SuccessUpdate", "SuccessUpdate")
                     }
+
+                    UiState.Default -> Log.d("Default", "Default")
                 }
             }
         }

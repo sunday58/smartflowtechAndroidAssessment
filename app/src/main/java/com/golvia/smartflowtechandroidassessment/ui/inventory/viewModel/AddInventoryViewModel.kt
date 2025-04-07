@@ -24,7 +24,7 @@ class AddInventoryViewModel @Inject constructor(
     private val inventoryRepository: InventoryRepository
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Default)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
 

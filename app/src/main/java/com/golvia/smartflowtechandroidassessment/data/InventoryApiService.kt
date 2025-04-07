@@ -16,6 +16,11 @@ interface InventoryApiService {
     @GET("api/v1/products")
     suspend fun getInventory(): Response<InventoryResponse>
 
+    @GET("api/v1/products/{id}")
+    suspend fun getDetailInventory(
+        @Path("id") id: String
+    ): Response<InventoryResponseItem>
+
     @POST("api/v1/products")
     suspend fun postInventory(
         @Body inventoryItem: InventoryRequest

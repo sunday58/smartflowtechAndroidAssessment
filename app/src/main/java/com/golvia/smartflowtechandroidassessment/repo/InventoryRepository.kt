@@ -14,4 +14,5 @@ interface InventoryRepository {
     suspend fun putInventory(id: Int, inventoryItem: InventoryRequest): InventoryResponseItem?
     suspend fun deleteInventory(id: Int): InventoryResponseItem?
     fun searchInventoryByName(query: String): Flow<List<InventoryResponseItem>>
+    fun getDetailInventory(id: String): Flow<InventoryResponseItem>
 }

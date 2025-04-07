@@ -29,9 +29,7 @@ class GetInventoryViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    init {
-        getInventoryItems()
-    }
+
 
     fun getInventoryItems() {
         viewModelScope.launch {
@@ -40,6 +38,26 @@ class GetInventoryViewModel @Inject constructor(
             try {
                 inventoryRepository.getInventory().collect { inventoryItems ->
                     _uiState.value = UiState.Success(inventoryItems)
+                }
+            } catch (e: TimeoutException) {
+                _uiState.value = UiState.Error("Request timed out: ${e.message}")
+            } catch (e: NoInternetException) {
+                _uiState.value = UiState.Error("No internet connection. Please try again.")
+            } catch (e: ServerException) {
+                _uiState.value = UiState.Error("Server error occurred: ${e.message}")
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e.message ?: "Unknown error occurred")
+            }
+        }
+    }
+
+    fun getInventoryDetailItems(id: String) {
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+
+            try {
+                inventoryRepository.getDetailInventory(id).collect { inventoryItems ->
+                    _uiState.value = UiState.SuccessUpdate(inventoryItems)
                 }
             } catch (e: TimeoutException) {
                 _uiState.value = UiState.Error("Request timed out: ${e.message}")

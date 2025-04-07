@@ -90,6 +90,28 @@ class InventoryRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
+    override fun getDetailInventory(id: String): Flow<InventoryResponseItem> = flow {
+        emit(inventoryDao.getItemById(id))
+
+        try {
+            val response = inventoryApiService.getDetailInventory(id)
+            if (response.isSuccessful) {
+                val item = response.body()
+
+                withContext(Dispatchers.IO) {
+                    item?.let { inventoryDao.insertAll(listOf(it)) }
+                }
+
+                item?.let { emit(inventoryDao.getItemById(id)) }
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                throw mapError(response.code(), errorBody)
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }.flowOn(Dispatchers.IO)
+
     private fun mapError(code: Int, errorBody: String): Exception {
         return when (code) {
             408 -> TimeoutException(parseErrorMessage(errorBody))
