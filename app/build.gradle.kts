@@ -64,7 +64,6 @@ dependencies {
     implementation(libs.androidx.ui.test.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
@@ -99,15 +98,6 @@ dependencies {
     implementation(libs.accompanist.coil)
     implementation(libs.coil.compose)
     testImplementation(libs.mockk)
-
-    testImplementation(libs.mockk.agent.jvm)
-    testImplementation(libs.kotlinx.coroutines.test)
-    // For testing coroutines
-    testImplementation(libs.kotlinx.coroutines.test.v173)
-    testImplementation(libs.mockito.core.v550)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.turbine)
-    testImplementation(libs.junit)
     implementation(libs.threetenabp)
 }
 

@@ -84,7 +84,7 @@ fun InventoryItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll( rememberScrollState() ),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 AnalyticsPieChart(
@@ -96,7 +96,7 @@ fun InventoryItem(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 AnalyticsHorizontalBarChart(
-                    title = stringResource(R.string.lowest_in_price_items),
+                    title = "Lowest in Price Items",
                     dataList = convertInventoryLow10StockToChart(
                         inventoryItem,
                     ),
