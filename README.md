@@ -31,7 +31,8 @@ An advanced Inventory Management & Analytics App built with Jetpack Compose, pro
 
 ## 🧱 Architecture
 
-📦 com.example.inventoryapp
+### 📦 com.smartflow.inventoryapp
+
 │
 ├── data
 │   ├── model               # InventoryResponseItem, ChartItem, etc.
