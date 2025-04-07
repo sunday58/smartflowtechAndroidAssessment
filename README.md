@@ -63,5 +63,22 @@ An advanced Inventory Management & Analytics App built with Jetpack Compose, pro
 Clone the repository:
 
 git clone https://github.com/sunday58/inventory-analytics-compose.git
-cd inventory-analytics-compose
+cd inventory-analytics-compose](https://github.com/sunday58/smartflowtechAndroidAssessment.git)
+
+🧩 UI States
+The app uses a unified UiState sealed class to manage and observe loading, success, and error states in the UI:
+
+sealed class UiState {
+    object Loading : UiState()
+    data class Success(val data: List<InventoryResponseItem>) : UiState()
+    data class SuccessUpdate(val data: InventoryDetailResponse) : UiState()
+    data class Error(val message: String) : UiState()
+}
+
+📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+🙌 Credits
+Built with 💙 by David Sunday using Jetpack Compose and Kotlin.
+
 
