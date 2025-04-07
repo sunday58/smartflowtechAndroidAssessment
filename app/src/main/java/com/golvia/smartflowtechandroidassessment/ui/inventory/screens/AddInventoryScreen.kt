@@ -3,6 +3,7 @@ package com.golvia.smartflowtechandroidassessment.ui.inventory.screens
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -11,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +41,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,7 +63,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.golvia.smartflowtechandroidassessment.R
 import com.golvia.smartflowtechandroidassessment.data.InventoryRequest
-import com.golvia.smartflowtechandroidassessment.ui.inventory.components.ErrorStateMessage
+import com.golvia.smartflowtechandroidassessment.data.InventoryResponseItem
 import com.golvia.smartflowtechandroidassessment.ui.inventory.states.UiState
 import com.golvia.smartflowtechandroidassessment.ui.inventory.viewModel.AddInventoryViewModel
 
@@ -73,19 +76,20 @@ fun NewProductScreen(
     viewModel: AddInventoryViewModel = hiltViewModel(),
     categories: List<Int>,
     onSaveProduct: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    inventoryData: InventoryResponseItem? = null
 ) {
-    var title by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var selectedCategoryId by remember { mutableStateOf<Int?>(null) }
+    val title = remember { mutableStateOf(inventoryData?.title ?: "") }
+    val price = remember { mutableStateOf(inventoryData?.price?.toString() ?: "") }
+    val description = remember { mutableStateOf(inventoryData?.description ?: "") }
+    val selectedCategoryId = remember { mutableStateOf(inventoryData?.category?.categoryId) }
     var selectedImages by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val isFormValid = title.isNotBlank()
-            && price.toDoubleOrNull() != null
-            && description.isNotBlank()
-            && selectedCategoryId != null
+    val isFormValid = title.value.isNotBlank()
+            && price.value.toDoubleOrNull() != null
+            && description.value.isNotBlank()
+            && selectedCategoryId.value != null
             && selectedImages.isNotEmpty()
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -104,7 +108,7 @@ fun NewProductScreen(
     }
 
     val focusRequester = remember { FocusRequester() }
-    var isFocused by remember { mutableStateOf(false) }
+    val isFocused by remember { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val imeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
@@ -135,137 +139,178 @@ fun NewProductScreen(
                 )
             )
         }
-    ){
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 80.dp, start = 16.dp, end = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text("Add New Product", style = MaterialTheme.typography.titleLarge)
-
-            OutlinedTextField(
-                value = title,
-                onValueChange = { title = it },
-                label = { Text("Title") },
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
-                    }.fillMaxWidth()
-            )
-
-            OutlinedTextField(
-                value = price,
-                onValueChange = { price = it },
-                label = { Text("Price") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier
-                        .focusRequester(focusRequester)
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
-                    }.fillMaxWidth()
-            )
-
-            OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Description") },
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
-                    }
-                    .fillMaxWidth()
-            )
-
-            // Category Dropdown (Integer list)
-            var categoryDropdownExpanded by remember { mutableStateOf(false) }
-            Box {
-                OutlinedTextField(
-                    value = selectedCategoryId?.toString() ?: "",
-                    onValueChange = {},
-                    label = { Text("Category") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester)
-                        .onFocusChanged { focusState ->
-                            isFocused = focusState.isFocused
-                        }
-                        .clickable { categoryDropdownExpanded = true },
-                    enabled = false
-                )
-                DropdownMenu(
-                    expanded = categoryDropdownExpanded,
-                    onDismissRequest = { categoryDropdownExpanded = false }
-                ) {
-                    categories.forEach { id ->
-                        DropdownMenuItem(
-                            text = { Text("Category $id") },
-                            onClick = {
-                                selectedCategoryId = id
-                                categoryDropdownExpanded = false
-                            }
-                        )
-                    }
-                }
-            }
-
-            // Image Picker
-            Button(onClick = {
-                imagePickerLauncher.launch("image/*")
-            }) {
-                Text("Pick Images")
-            }
-
-            // Image Previews
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(selectedImages.size) { uri ->
-                    Image(
-                        painter = rememberAsyncImagePainter(selectedImages[uri]),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Save Product Button
-            Button(
-                onClick = {
-                    val inventoryRequest = InventoryRequest(
-                        title = title,
-                        price = price.toDoubleOrNull() ?: 0.0,
-                        description = description,
-                        categoryId = selectedCategoryId ?: 1,
-                        images = arrayListOf("https://www.autoshippers.co.uk/blog/wp-content/uploads/bugatti-centodieci.jpg")
-                    )
-                    viewModel.addInventoryItems(inventoryRequest)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                enabled = isFormValid && uiState !is UiState.Loading
-            ) {
-                if (uiState is UiState.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(20.dp),
-                        color = Color.Red,
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text("Save Product")
-                }
-            }
-
-        }
+    ){ paddinValues ->
+        AddInventoryComponent(
+            paddinValues,
+            title,
+            focusRequester,
+            isFocused,
+            price,
+            description,
+            selectedCategoryId,
+            categories,
+            imagePickerLauncher,
+            selectedImages,
+            viewModel,
+            isFormValid,
+            uiState
+        )
     }
 
+}
+
+@Composable
+private fun AddInventoryComponent(
+    paddinValues: PaddingValues,
+    title: MutableState<String>,
+    focusRequester: FocusRequester,
+    isFocused: Boolean,
+    price: MutableState<String>,
+    description: MutableState<String>,
+    selectedCategoryId: MutableState<Int?>,
+    categories: List<Int>,
+    imagePickerLauncher: ManagedActivityResultLauncher<String, List<@JvmSuppressWildcards Uri>>,
+    selectedImages: List<Uri>,
+    viewModel: AddInventoryViewModel,
+    isFormValid: Boolean,
+    uiState: UiState
+) {
+    var isFocused1 = isFocused
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                top = 80.dp,
+                start = 16.dp,
+                end = 16.dp,
+                bottom = paddinValues.calculateBottomPadding()
+            ),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text("Add New Product", style = MaterialTheme.typography.titleLarge)
+
+        OutlinedTextField(
+            value = title.value,
+            onValueChange = { title.value = it },
+            label = { Text("Title") },
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .onFocusChanged { focusState ->
+                    isFocused1 = focusState.isFocused
+                }
+                .fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = price.value,
+            onValueChange = { price.value = it },
+            label = { Text("Price") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .onFocusChanged { focusState ->
+                    isFocused1 = focusState.isFocused
+                }
+                .fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = description.value,
+            onValueChange = { description.value = it },
+            label = { Text("Description") },
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .onFocusChanged { focusState ->
+                    isFocused1 = focusState.isFocused
+                }
+                .fillMaxWidth()
+        )
+
+        // Category Dropdown (Integer list)
+        var categoryDropdownExpanded by remember { mutableStateOf(false) }
+        Box {
+            OutlinedTextField(
+                value = selectedCategoryId.toString(),
+                onValueChange = {},
+                label = { Text("Category") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { focusState ->
+                        isFocused1 = focusState.isFocused
+                    }
+                    .clickable { categoryDropdownExpanded = true },
+                enabled = false
+            )
+            DropdownMenu(
+                expanded = categoryDropdownExpanded,
+                onDismissRequest = { categoryDropdownExpanded = false }
+            ) {
+                categories.forEach { id ->
+                    DropdownMenuItem(
+                        text = { Text("Category $id") },
+                        onClick = {
+                            selectedCategoryId.value = id
+                            categoryDropdownExpanded = false
+                        }
+                    )
+                }
+            }
+        }
+
+        // Image Picker
+        Button(onClick = {
+            imagePickerLauncher.launch("image/*")
+        }) {
+            Text("Pick Images")
+        }
+
+        // Image Previews
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(selectedImages.size) { uri ->
+                Image(
+                    painter = rememberAsyncImagePainter(selectedImages[uri]),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Save Product Button
+        Button(
+            onClick = {
+                val inventoryRequest = InventoryRequest(
+                    title = title.value,
+                    price = price.value.toDoubleOrNull() ?: 0.0,
+                    description = description.value,
+                    categoryId = selectedCategoryId.value ?: 1,
+                    images = arrayListOf("https://www.autoshippers.co.uk/blog/wp-content/uploads/bugatti-centodieci.jpg")
+                )
+                viewModel.addInventoryItems(inventoryRequest)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            enabled = isFormValid && uiState !is UiState.Loading
+        ) {
+            if (uiState is UiState.Loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(20.dp),
+                    color = Color.Red,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text("Save Product")
+            }
+        }
+
+    }
 }
 

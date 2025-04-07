@@ -72,11 +72,11 @@ class InventoryRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteInventory(id: Int): InventoryResponseItem? {
+    override suspend fun deleteInventory(id: Int): Boolean? {
         val response = inventoryApiService.deleteInventory(id)
         if (response.isSuccessful) {
             inventoryDao.deleteById(id)
-            return response.body()
+            return response.body() ?: false
         } else {
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
             throw mapError(response.code(), errorBody)

@@ -35,6 +35,6 @@ interface InventoryApiService {
     @DELETE("api/v1/products/{id}")
     suspend fun deleteInventory(
         @Path("id") id: Int
-    ): Response<InventoryResponseItem>
+    ): Response<Boolean>
 
 }

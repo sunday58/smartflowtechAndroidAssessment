@@ -32,8 +32,8 @@ class DeleteInventoryViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
-                val inventory = inventoryRepository.deleteInventory(id)
-                _uiState.value = UiState.SuccessUpdate(inventory)
+                val deleted = inventoryRepository.deleteInventory(id)
+                _uiState.value = UiState.NoBody(deleted ?: false)
             } catch (e: TimeoutException) {
                 _uiState.value = UiState.Error("Request timed out: ${e.message}")
             } catch (e: NoInternetException) {

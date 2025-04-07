@@ -48,9 +48,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.golvia.smartflowtechandroidassessment.R
+import com.golvia.smartflowtechandroidassessment.data.InventoryResponseItem
 import com.golvia.smartflowtechandroidassessment.ui.inventory.components.ErrorStateMessage
+import com.golvia.smartflowtechandroidassessment.ui.inventory.components.FloatingActionButtonWithChildren
 import com.golvia.smartflowtechandroidassessment.ui.inventory.states.UiState
+import com.golvia.smartflowtechandroidassessment.ui.inventory.viewModel.DeleteInventoryViewModel
 import com.golvia.smartflowtechandroidassessment.ui.inventory.viewModel.GetInventoryViewModel
+import com.golvia.smartflowtechandroidassessment.utils.Constants.CURRENCY
+import com.golvia.smartflowtechandroidassessment.utils.formatWithComma
 
 /**
  * davidsunday
@@ -60,7 +65,10 @@ import com.golvia.smartflowtechandroidassessment.ui.inventory.viewModel.GetInven
 @Composable
 fun InventoryDetailScreen(
     viewModel: GetInventoryViewModel = hiltViewModel(),
+    deleteViewModel: DeleteInventoryViewModel = hiltViewModel(),
     inventoryId: String?,
+    onEditClick: (InventoryResponseItem?) -> Unit,
+    onDeleteClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
 
@@ -69,6 +77,26 @@ fun InventoryDetailScreen(
     }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val deleteState by deleteViewModel.uiState.collectAsStateWithLifecycle()
+    var isLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(deleteState) {
+        when (deleteState) {
+            is UiState.Success -> Log.d("SuccessUpdate", "SuccessUpdate")
+            is UiState.SuccessUpdate ->  Log.d("SuccessUpdate", "SuccessUpdate")
+            is UiState.Error -> {
+                isLoading = false
+            /* Maybe show Snackbar here */ }
+            is UiState.NoBody -> {
+                onDeleteClick()
+                isLoading = false
+            }
+            is UiState.Loading -> {
+                isLoading = true
+            }
+            else -> Unit
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -89,7 +117,7 @@ fun InventoryDetailScreen(
             )
         }
     ){ paddingValues ->
-        DetailComponent(paddingValues, uiState, viewModel, onBackClick)
+        DetailComponent(paddingValues, uiState, viewModel,isLoading, onEditClick, onBackClick)
     }
 }
 
@@ -98,6 +126,8 @@ private fun DetailComponent(
     modifier: PaddingValues,
     uiState: UiState,
     viewModel: GetInventoryViewModel,
+    isLoading: Boolean,
+    onEditClick: (InventoryResponseItem?) -> Unit,
     onBackClick: () -> Unit
 ) {
     var selectedIndex by remember { mutableStateOf(0) }
@@ -131,11 +161,14 @@ private fun DetailComponent(
             }
 
             SpecialOffersScreen(
+                inventoryData = inventoryData,
                 productImages = images,
                 selectedIndex = selectedIndex,
                 onImageSelected = { newIndex ->
                     selectedIndex = newIndex.coerceIn(0, images.size - 1)
                 },
+                onEditClick = onEditClick,
+                isLoading = isLoading,
                 onBackClick = {
                     onBackClick()
                 }
@@ -143,16 +176,21 @@ private fun DetailComponent(
         }
 
         UiState.Default -> Log.d("Default", "Default")
+        is UiState.NoBody -> Log.d("NoBody", "NoBody")
     }
 }
 
 
 @Composable
 fun SpecialOffersScreen(
+    inventoryData: InventoryResponseItem?,
     productImages: List<String>?,
     selectedIndex: Int,
     onBackClick: () -> Unit,
-    onImageSelected: (Int) -> Unit
+    onImageSelected: (Int) -> Unit,
+    onEditClick: (InventoryResponseItem?) -> Unit,
+    isLoading: Boolean,
+    viewModel: DeleteInventoryViewModel = hiltViewModel()
 ) {
     val selectedImage = productImages?.get(selectedIndex)
 
@@ -272,15 +310,21 @@ fun SpecialOffersScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("Zipper Hoodie", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    Text("(Black)", fontSize = 16.sp, color = Color.Gray)
+                    Text(inventoryData?.title.orEmpty(), fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Text(inventoryData?.description.orEmpty(), fontSize = 16.sp, color = Color.Gray)
                 }
                 Text(
-                    text = "947.3 €",
+                    text = CURRENCY + inventoryData?.price.formatWithComma(),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
         }
+
+        FloatingActionButtonWithChildren(
+            onEditClick = { onEditClick(inventoryData) },
+            onDeleteClick = { inventoryData?.id?.let { viewModel.deleteInventoryItems(it) }}
+            , isLoading = isLoading
+        )
     }
 }

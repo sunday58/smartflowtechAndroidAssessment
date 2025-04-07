@@ -114,6 +114,7 @@ fun InventoryScreen(
                     }
 
                     UiState.Default -> Log.d("Default", "Default")
+                    is UiState.NoBody -> Log.d("NoBody", "NoBody")
                 }
             }
         }

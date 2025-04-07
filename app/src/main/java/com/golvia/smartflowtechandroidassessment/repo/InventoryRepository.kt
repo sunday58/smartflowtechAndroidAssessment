@@ -12,7 +12,7 @@ interface InventoryRepository {
     fun getInventory(): Flow<List<InventoryResponseItem>>
     suspend fun postInventory(inventoryItem: InventoryRequest): InventoryResponseItem?
     suspend fun putInventory(id: Int, inventoryItem: InventoryRequest): InventoryResponseItem?
-    suspend fun deleteInventory(id: Int): InventoryResponseItem?
+    suspend fun deleteInventory(id: Int): Boolean?
     fun searchInventoryByName(query: String): Flow<List<InventoryResponseItem>>
     fun getDetailInventory(id: String): Flow<InventoryResponseItem>
 }
