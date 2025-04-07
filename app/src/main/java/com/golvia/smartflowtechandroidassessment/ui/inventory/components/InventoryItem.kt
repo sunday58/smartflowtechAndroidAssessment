@@ -49,7 +49,7 @@ fun InventoryItem(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Lost of saving",
+                text = stringResource(R.string.inventory_list),
                 style = MaterialTheme.typography.headlineMedium
             )
             Spacer(modifier = Modifier.height(16.dp))

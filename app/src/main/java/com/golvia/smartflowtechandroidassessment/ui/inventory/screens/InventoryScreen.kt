@@ -80,7 +80,8 @@ fun InventoryScreen(
                                 InventoryItem(
                                     inventoryItem = articles,
                                     onSearch = { viewModel.searchInventory(it) },
-                                    onItemClick = { onItemClick(it) }
+                                    onItemClick = { onItemClick(it) },
+                                    onFabClick = onAddItemClick
                                 )
 
                         }

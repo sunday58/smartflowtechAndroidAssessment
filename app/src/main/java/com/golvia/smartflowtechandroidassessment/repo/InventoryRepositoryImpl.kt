@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.IOException
 import javax.inject.Inject
@@ -24,19 +25,26 @@ class InventoryRepositoryImpl @Inject constructor(
     override fun getInventory(): Flow<List<InventoryResponseItem>> = flow {
         emit(inventoryDao.getAllItems())
 
-        val response = inventoryApiService.getInventory()
-        if (response.isSuccessful) {
-            val items = response.body().orEmpty()
+        try {
+            val response = inventoryApiService.getInventory()
+            if (response.isSuccessful) {
+                val items = response.body().orEmpty()
 
-            inventoryDao.clearAll()
-            inventoryDao.insertAll(items)
+                withContext(Dispatchers.IO) {
+                    inventoryDao.clearAll()
+                    inventoryDao.insertAll(items)
+                }
 
-            emit(inventoryDao.getAllItems())
-        } else {
-            val errorBody = response.errorBody()?.string() ?: "Unknown error"
-            throw mapError(response.code(), errorBody)
+                emit(inventoryDao.getAllItems())
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                throw mapError(response.code(), errorBody)
+            }
+        } catch (e: Exception) {
+            throw e
         }
-    }
+    }.flowOn(Dispatchers.IO)
+
 
     override suspend fun postInventory(inventoryItem: InventoryRequest): InventoryResponseItem? {
         val response = inventoryApiService.postInventory(inventoryItem)
