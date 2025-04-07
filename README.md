@@ -34,21 +34,7 @@ https://drive.google.com/file/d/1rNk_sB8FOymVMH_z4z-ujf-zez4e3h1T/view?usp=shari
 
 ### 📦 com.smartflow.inventoryapp
 
-│
-├── data
-│   ├── model               # InventoryResponseItem, ChartItem, etc.
-│   ├── repository          # InventoryRepository interface and impl
-│   └── source              # Network or local data sources
-│
-├── domain
-│   └── usecase             # Business logic
-│
-├── ui
-│   ├── viewmodel           # GetInventoryViewModel with StateFlow
-│   ├── screen              # Composables for screens: InventoryList, ChartAnalytics
-│   └── component           # Reusable Jetpack Compose UI elements
-│
-└── utils                   # Exception handlers, UIState sealed class, etc.
+<pre> <code> 📦 com.example.inventoryapp │ ├── data │ ├── model # InventoryResponseItem, ChartItem, etc. │ ├── repository # InventoryRepository interface and impl │ └── source # Network or local data sources │ ├── domain │ └── usecase # Business logic │ ├── ui │ ├── viewmodel # GetInventoryViewModel with StateFlow │ ├── screen # Composables for screens: InventoryList, ChartAnalytics │ └── component # Reusable Jetpack Compose UI elements │ └── utils # Exception handlers, UIState sealed class, etc. </code> </pre>
 
 
 ## 📈 Tech Stack
