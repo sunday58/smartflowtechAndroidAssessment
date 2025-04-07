@@ -13,11 +13,14 @@ espressoCore = "3.6.1"
 kotlinxCoroutinesAndroid = "1.7.3"
 kotlinxCoroutinesCore = "1.7.1"
 kotlinxCoroutinesTest = "1.10.1"
+kotlinxCoroutinesTestVersion = "1.7.3"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.0"
 composeBom = "2025.02.00"
 loggingInterceptor = "4.9.3"
 mockitoCore = "4.8.0"
+mockitoCoreVersion = "5.5.0"
+mockitoKotlin = "5.2.1"
 mockk = "1.12.4"
 mockkAgentJvm = "1.12.4"
 retrofitVersion = "2.9.0"
@@ -25,6 +28,7 @@ jacocoDep = "0.8.8"
 roomCompiler = "2.5.0"
 roomRuntime = "2.6.1"
 threetenabp = "1.4.5"
+turbine = "1.0.0"
 uiTestAndroid = "1.7.8"
 
 [libraries]
@@ -55,8 +59,11 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlinx-coroutines-test-v173 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTestVersion" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-core-v550 = { module = "org.mockito:mockito-core", version.ref = "mockitoCoreVersion" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-agent-jvm = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockkAgentJvm" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
@@ -64,6 +71,7 @@ hilt-dep = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-complier = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
 threetenabp = { module = "com.jakewharton.threetenabp:threetenabp", version.ref = "threetenabp" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

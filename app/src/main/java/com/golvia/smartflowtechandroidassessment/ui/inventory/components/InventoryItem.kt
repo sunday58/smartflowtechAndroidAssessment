@@ -33,6 +33,7 @@ import com.golvia.smartflowtechandroidassessment.R
 import com.golvia.smartflowtechandroidassessment.data.ChartItem
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponseItem
 import com.golvia.smartflowtechandroidassessment.utils.convertAnalyticsSendMoneyToChart
+import com.golvia.smartflowtechandroidassessment.utils.convertInventoryLow10StockToChart
 import com.golvia.smartflowtechandroidassessment.utils.convertSalesOverTimeToChart
 import java.text.NumberFormat.Field.CURRENCY
 
@@ -83,13 +84,23 @@ fun InventoryItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
-                    .verticalScroll( rememberScrollState() ),
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 AnalyticsPieChart(
                     title = stringResource(R.string.sales, CURRENCY),
                     dataList = convertAnalyticsSendMoneyToChart(inventoryItem),
                     showAsInt = false
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                AnalyticsHorizontalBarChart(
+                    title = stringResource(R.string.lowest_in_price_items),
+                    dataList = convertInventoryLow10StockToChart(
+                        inventoryItem,
+                    ),
+                    bottomLabel = "Price List"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -208,6 +219,33 @@ fun AnalyticsLineChart(
         LineChart(
             items = dataList,
             bottomLabel = bottomLabel
+        )
+    } else {
+        AnalyticsEmptyField(Modifier.height(212.dp))
+    }
+}
+
+@Composable
+fun AnalyticsHorizontalBarChart(
+    title: String,
+    dataList: List<ChartItem>?,
+    bottomLabel: String,
+) = Column {
+    Text(
+        modifier = Modifier
+            .padding(bottom = 24.dp),
+        text = title,
+        style = TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 18.sp,
+            fontWeight = FontWeight(500),
+            color = Color.Black
+        )
+    )
+    if (!dataList.isNullOrEmpty() && !dataList.all { it.value == 0.0 }) {
+        DetailHorizontalBarChart(
+            items = dataList,
+            leftLabel = bottomLabel
         )
     } else {
         AnalyticsEmptyField(Modifier.height(212.dp))

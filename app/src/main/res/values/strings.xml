@@ -5,4 +5,5 @@
     <string name="add_item">Add Item</string>
     <string name="inventory_list">Inventory List</string>
     <string name="sales">Sales</string>
+    <string name="lowest_in_price_items">Lowest in Price Items</string>
 </resources>

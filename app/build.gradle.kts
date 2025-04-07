@@ -102,6 +102,12 @@ dependencies {
 
     testImplementation(libs.mockk.agent.jvm)
     testImplementation(libs.kotlinx.coroutines.test)
+    // For testing coroutines
+    testImplementation(libs.kotlinx.coroutines.test.v173)
+    testImplementation(libs.mockito.core.v550)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.turbine)
+    testImplementation(libs.junit)
     implementation(libs.threetenabp)
 }
 

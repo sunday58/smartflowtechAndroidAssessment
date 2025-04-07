@@ -66,6 +66,21 @@ fun convertSalesOverTimeToChart(
     }
 }
 
+fun convertInventoryLow10StockToChart(
+    item: List<InventoryResponseItem>,
+): List<ChartItem>? {
+    return item
+        .filter { (it.price ?: 0.0) in 0.01..50.0 }
+        .sortedByDescending { it.price }
+        .take(10)
+        .map {
+            ChartItem(
+                label = it.title?.take(5).orEmpty(),
+                value = it.price ?: 0.0
+            )
+        }
+}
+
 fun AnnotatedString.formatDecimalText(): String {
     val value = this.text.toDoubleOrNull()
     return if (value != null) {
