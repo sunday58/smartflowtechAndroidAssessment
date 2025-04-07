@@ -4,4 +4,5 @@
     <string name="no_inventory_item_found_please_add_an_item">No inventory item found, please add an item</string>
     <string name="add_item">Add Item</string>
     <string name="inventory_list">Inventory List</string>
+    <string name="sales">Sales</string>
 </resources>

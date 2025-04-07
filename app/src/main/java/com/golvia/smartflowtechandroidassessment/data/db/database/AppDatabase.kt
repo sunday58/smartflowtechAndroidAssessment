@@ -10,7 +10,7 @@ import androidx.room.TypeConverters
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponseItem
 import com.golvia.smartflowtechandroidassessment.data.db.typeConverter.StringListConverter
 
-@Database(entities = [InventoryResponseItem::class], version = 1)
+@Database(entities = [InventoryResponseItem::class], version = 2)
 @TypeConverters(StringListConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun inventoryDao(): InventoryDao

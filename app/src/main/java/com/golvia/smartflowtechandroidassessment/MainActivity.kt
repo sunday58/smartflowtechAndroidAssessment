@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SmartflowtechAndroidAssessmentTheme {
                 Surface(modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background) {
+                    color = MaterialTheme.colorScheme.primary) {
                     val navController = rememberNavController()
                     InventoryNavHost(navController)
                 }

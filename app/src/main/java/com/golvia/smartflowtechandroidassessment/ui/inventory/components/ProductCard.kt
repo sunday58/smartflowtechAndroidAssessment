@@ -25,6 +25,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.golvia.smartflowtechandroidassessment.R
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponseItem
+import com.golvia.smartflowtechandroidassessment.utils.Constants.CURRENCY
+import com.golvia.smartflowtechandroidassessment.utils.formatDate
+import com.golvia.smartflowtechandroidassessment.utils.formatWithComma
 
 /**
  * davidsunday
@@ -36,7 +39,7 @@ fun ProductCard(
     onClick: (Int) -> Unit
 ) {
     Card(
-        modifier = Modifier.width(160.dp)
+        modifier = Modifier.width(160.dp).height(220.dp)
             .clip(RoundedCornerShape(8.dp))
             .clickable {
                 onClick.invoke(inventoryItem.id)
@@ -45,8 +48,8 @@ fun ProductCard(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(8.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.padding(4.dp)
         ) {
             val imageUrl = inventoryItem.images?.firstOrNull()
             val finalImageUrl = if (!imageUrl.isNullOrEmpty()) {
@@ -56,31 +59,41 @@ fun ProductCard(
             }
             AsyncImage(
                 model = finalImageUrl,
-                contentDescription = inventoryItem.description.orEmpty(),
+                contentDescription = "",
                 modifier = Modifier
                     .height(80.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(4.dp)),
-                contentScale = ContentScale.Inside
+                contentScale = ContentScale.Crop
             )
             Text(
-                text = inventoryItem.title.orEmpty(),
+                modifier = Modifier.padding(top = 4.dp),
+                text = inventoryItem.title?.take(20).orEmpty() +
+                if ((inventoryItem.title?.length ?: 0) > 20) "..." else "",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = inventoryItem.description?.take(20).orEmpty() +
+                        if ((inventoryItem.description?.length ?: 0) > 20) "..." else "",
                 style = MaterialTheme.typography.bodyMedium
             )
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = inventoryItem.price.toString(),
+                    text = CURRENCY + inventoryItem.price.formatWithComma(),
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
             }
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
             ) {
                 Text(
-                    text = inventoryItem.creationAt.toString(),
+                    text = formatDate(inventoryItem.creationAt.orEmpty()),
                     style = MaterialTheme.typography.displaySmall,
                     color = Color.Gray,
                     fontSize = 12.sp

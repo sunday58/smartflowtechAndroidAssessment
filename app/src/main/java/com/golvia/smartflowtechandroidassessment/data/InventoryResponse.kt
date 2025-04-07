@@ -20,7 +20,7 @@ data class InventoryResponseItem(
     @PrimaryKey val id: Int, // non-nullable and primary key
     @TypeConverters(StringListConverter::class)
     val images: List<String>?,
-    val price: Int?,
+    val price: Double?,
     val slug: String?,
     val title: String?,
     val updatedAt: String?
@@ -35,3 +35,8 @@ data class Category(
     @SerializedName("slug") val categorySlug: String?,
     @SerializedName("updatedAt") val categoryUpdatedAt: String?
 ) : Parcelable
+
+data class ChartItem(
+    val label: String,
+    val value: Double,
+)
