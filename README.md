@@ -20,13 +20,14 @@ An advanced Inventory Management & Analytics App built with Jetpack Compose, pro
 
 ✅ Unit Tested: ViewModel and repository layers are fully unit tested with coroutine support.
 
+## APK link
+
+https://drive.google.com/file/d/1rNk_sB8FOymVMH_z4z-ujf-zez4e3h1T/view?usp=sharing
+
 
 ## 📸 Screenshots
 
-![Screenshot_1744061344](https://github.com/user-attachments/assets/93dde009-4199-44a7-b623-148a14fddf11)
-![Screenshot_1744057748](https://github.com/user-attachments/assets/29a50644-78ea-4ead-9074-17c4b1edafec)
-![Screenshot_1744057742](https://github.com/user-attachments/assets/2635bfdb-cc45-420e-a0ac-f520843ed63c)
-![Screenshot_1744061965](https://github.com/user-attachments/assets/3c998bc2-971e-4878-9348-7cbd0fb7ed34)
+<table> <tr> <td><img src="https://github.com/user-attachments/assets/93dde009-4199-44a7-b623-148a14fddf11" width="250"/></td> <td><img src="https://github.com/user-attachments/assets/29a50644-78ea-4ead-9074-17c4b1edafec" width="250"/></td> </tr> <tr> <td><img src="https://github.com/user-attachments/assets/2635bfdb-cc45-420e-a0ac-f520843ed63c" width="250"/></td> <td><img src="https://github.com/user-attachments/assets/3c998bc2-971e-4878-9348-7cbd0fb7ed34" width="250"/></td> </tr> </table>
 
 
 ## 🧱 Architecture
