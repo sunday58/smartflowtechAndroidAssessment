@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.golvia.smartflowtechandroidassessment.ui.naviagtion.InventoryNavHost
 import com.golvia.smartflowtechandroidassessment.ui.theme.SmartflowtechAndroidAssessmentTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background) {
                     val navController = rememberNavController()
+                    InventoryNavHost(navController)
                 }
             }
         }

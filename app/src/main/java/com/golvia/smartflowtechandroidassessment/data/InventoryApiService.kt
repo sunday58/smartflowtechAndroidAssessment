@@ -2,6 +2,7 @@ package com.golvia.smartflowtechandroidassessment.data
 
 
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -16,11 +17,14 @@ interface InventoryApiService {
     suspend fun getInventory(): Response<InventoryResponse>
 
     @POST("api/v1/products")
-    suspend fun postInventory(): Response<InventoryResponseItem>
+    suspend fun postInventory(
+        @Body inventoryItem: InventoryRequest
+    ): Response<InventoryResponseItem>
 
     @PUT("api/v1/products/{id}")
     suspend fun putInventory(
-        @Path("id") id: Int
+        @Path("id") id: Int,
+        @Body inventoryItem: InventoryRequest
     ): Response<InventoryResponseItem>
 
     @DELETE("api/v1/products/{id}")

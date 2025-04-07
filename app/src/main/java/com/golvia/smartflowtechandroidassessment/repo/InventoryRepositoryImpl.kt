@@ -1,6 +1,7 @@
 package com.golvia.smartflowtechandroidassessment.repo
 
 import com.golvia.smartflowtechandroidassessment.data.InventoryApiService
+import com.golvia.smartflowtechandroidassessment.data.InventoryRequest
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponse
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponseItem
 import org.json.JSONObject
@@ -28,8 +29,8 @@ class InventoryRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun postInventory(): InventoryResponseItem? {
-        val response = inventoryApiService.postInventory()
+    override suspend fun postInventory(inventoryItem: InventoryRequest): InventoryResponseItem? {
+        val response = inventoryApiService.postInventory(inventoryItem)
         if (response.isSuccessful) {
             return response.body()
         } else {
@@ -43,8 +44,8 @@ class InventoryRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun putInventory(id: Int): InventoryResponseItem? {
-        val response = inventoryApiService.putInventory(id)
+    override suspend fun putInventory(id: Int, inventoryItem: InventoryRequest): InventoryResponseItem? {
+        val response = inventoryApiService.putInventory(id, inventoryItem)
         if (response.isSuccessful) {
             return response.body()
         } else {
