@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.dagger.hilt)
     id("jacoco")
     alias(libs.plugins.kotlin.parcelize)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -86,6 +87,11 @@ dependencies {
     implementation (libs.hilt.dep )
     kapt(libs.hilt.complier)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    //data store
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler.v250)
+    implementation(libs.androidx.room.ktx)
 
 
     // coil

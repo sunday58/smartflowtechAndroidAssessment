@@ -21,18 +21,23 @@ import javax.inject.Inject
 @HiltViewModel
 class GetInventoryViewModel @Inject constructor(
     private val inventoryRepository: InventoryRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    init {
+        getInventoryItems()
+    }
 
     fun getInventoryItems() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
+
             try {
-                val inventory = inventoryRepository.getInventory()
-                _uiState.value = UiState.Success(inventory)
+                inventoryRepository.getInventory().collect { inventoryItems ->
+                    _uiState.value = UiState.Success(inventoryItems)
+                }
             } catch (e: TimeoutException) {
                 _uiState.value = UiState.Error("Request timed out: ${e.message}")
             } catch (e: NoInternetException) {
@@ -40,7 +45,6 @@ class GetInventoryViewModel @Inject constructor(
             } catch (e: ServerException) {
                 _uiState.value = UiState.Error("Server error occurred: ${e.message}")
             } catch (e: Exception) {
-                // Fallback for anything else not caught above
                 _uiState.value = UiState.Error(e.message ?: "Unknown error occurred")
             }
         }
