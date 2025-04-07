@@ -1,4 +1,5 @@
-📦 Inventory Manager & Analytics App
+# 📦 Inventory Manager & Analytics App
+
 An advanced Inventory Management & Analytics App built with Jetpack Compose, providing a modern, intuitive, and responsive UI for tracking stock levels, analyzing inventory trends, and optimizing product performance — all in real time.
 
 🛠️ Features
