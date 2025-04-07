@@ -302,29 +302,40 @@ fun SpecialOffersScreen(
             shadowElevation = 8.dp,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(inventoryData?.title.orEmpty(), fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    Text(inventoryData?.description.orEmpty(), fontSize = 16.sp, color = Color.Gray)
+            Column {
+                Row(
+                    modifier = Modifier
+                        .padding(30.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(inventoryData?.title.orEmpty(), fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(inventoryData?.description.orEmpty(), fontSize = 16.sp, color = Color.Gray)
+                    }
                 }
-                Text(
-                    text = CURRENCY + inventoryData?.price.formatWithComma(),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
 
-        FloatingActionButtonWithChildren(
-            onEditClick = { onEditClick(inventoryData) },
-            onDeleteClick = { inventoryData?.id?.let { viewModel.deleteInventoryItems(it) }}
-            , isLoading = isLoading
-        )
+               Column(
+                   modifier = Modifier
+                       .padding(8.dp)
+                       .fillMaxWidth(),
+                   horizontalAlignment = Alignment.End
+               ) {
+                   Text(
+                       text = CURRENCY + inventoryData?.price.formatWithComma(),
+                       fontSize = 20.sp,
+                       fontWeight = FontWeight.Bold
+                   )
+               }
+            }
+            FloatingActionButtonWithChildren(
+                onEditClick = { onEditClick(inventoryData) },
+                onDeleteClick = { inventoryData?.id?.let { viewModel.deleteInventoryItems(it) }}
+                , isLoading = isLoading
+            )
+
+        }
     }
 }

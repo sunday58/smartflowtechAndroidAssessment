@@ -24,8 +24,11 @@ class DeleteInventoryViewModel @Inject constructor(
     private val inventoryRepository: InventoryRepository
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Default)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    private val _message = MutableStateFlow(false)
+    val message: StateFlow<Boolean> = _message.asStateFlow()
 
 
     fun deleteInventoryItems(id: Int) {
@@ -34,13 +37,18 @@ class DeleteInventoryViewModel @Inject constructor(
             try {
                 val deleted = inventoryRepository.deleteInventory(id)
                 _uiState.value = UiState.NoBody(deleted ?: false)
+                _message.value = true
             } catch (e: TimeoutException) {
+                _message.value = false
                 _uiState.value = UiState.Error("Request timed out: ${e.message}")
             } catch (e: NoInternetException) {
+                _message.value = false
                 _uiState.value = UiState.Error("No internet connection. Please try again.")
             } catch (e: ServerException) {
+                _message.value = false
                 _uiState.value = UiState.Error("Server error occurred: ${e.message}")
             } catch (e: Exception) {
+                _message.value = false
                 // Fallback for anything else not caught above
                 _uiState.value = UiState.Error(e.message ?: "Unknown error occurred")
             }

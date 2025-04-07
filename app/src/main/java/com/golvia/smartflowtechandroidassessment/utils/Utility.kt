@@ -4,11 +4,11 @@ import androidx.compose.ui.text.AnnotatedString
 import com.golvia.smartflowtechandroidassessment.data.ChartItem
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponse
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponseItem
+import org.threeten.bp.format.DateTimeFormatter
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
+import org.threeten.bp.ZonedDateTime
 
 /**
  * davidsunday
@@ -47,7 +47,7 @@ fun convertAnalyticsSendMoneyToChart(data: List<InventoryResponseItem>?): List<C
         ?.take(9)
         ?.map {
             ChartItem(
-                label = it.title ?: "Other",
+                label = it.title?.take(15) ?: "Other",
                 value = it.price ?: 0.0
             )
         }

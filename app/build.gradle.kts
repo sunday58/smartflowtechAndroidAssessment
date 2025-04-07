@@ -102,6 +102,7 @@ dependencies {
 
     testImplementation(libs.mockk.agent.jvm)
     testImplementation(libs.kotlinx.coroutines.test)
+    implementation(libs.threetenabp)
 }
 
 jacoco {

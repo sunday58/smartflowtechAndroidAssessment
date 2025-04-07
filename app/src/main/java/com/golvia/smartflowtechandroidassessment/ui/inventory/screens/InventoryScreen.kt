@@ -1,6 +1,7 @@
 package com.golvia.smartflowtechandroidassessment.ui.inventory.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +28,7 @@ import com.golvia.smartflowtechandroidassessment.ui.inventory.components.EmptySt
 import com.golvia.smartflowtechandroidassessment.ui.inventory.components.ErrorStateMessage
 import com.golvia.smartflowtechandroidassessment.ui.inventory.components.InventoryItem
 import com.golvia.smartflowtechandroidassessment.ui.inventory.states.UiState
+import com.golvia.smartflowtechandroidassessment.ui.inventory.viewModel.DeleteInventoryViewModel
 import com.golvia.smartflowtechandroidassessment.ui.inventory.viewModel.GetInventoryViewModel
 
 /**
@@ -36,6 +39,7 @@ import com.golvia.smartflowtechandroidassessment.ui.inventory.viewModel.GetInven
 @Composable
 fun InventoryScreen(
     viewModel: GetInventoryViewModel = hiltViewModel(),
+    deleteViewModel: DeleteInventoryViewModel = hiltViewModel(),
     onItemClick: (Int) -> Unit,
     onAddItemClick: () -> Unit,
 ){
@@ -43,6 +47,8 @@ fun InventoryScreen(
         viewModel.getInventoryItems()
     }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val deleteState by deleteViewModel.message.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
@@ -52,6 +58,10 @@ fun InventoryScreen(
         } else {
             viewModel.getInventoryItems()
         }
+    }
+
+    if (deleteState){
+        Toast.makeText(context, "Deleted Successfully", Toast.LENGTH_SHORT).show()
     }
 
     Scaffold(

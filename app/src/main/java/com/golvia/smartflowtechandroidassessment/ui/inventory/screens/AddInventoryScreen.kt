@@ -66,6 +66,7 @@ import com.golvia.smartflowtechandroidassessment.data.InventoryRequest
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponseItem
 import com.golvia.smartflowtechandroidassessment.ui.inventory.states.UiState
 import com.golvia.smartflowtechandroidassessment.ui.inventory.viewModel.AddInventoryViewModel
+import com.golvia.smartflowtechandroidassessment.ui.inventory.viewModel.UpdateInventoryViewModel
 
 /**
  * davidsunday
@@ -74,6 +75,7 @@ import com.golvia.smartflowtechandroidassessment.ui.inventory.viewModel.AddInven
 @Composable
 fun NewProductScreen(
     viewModel: AddInventoryViewModel = hiltViewModel(),
+    editViewModel: UpdateInventoryViewModel = hiltViewModel(),
     categories: List<Int>,
     onSaveProduct: () -> Unit,
     onBackClick: () -> Unit,
@@ -85,6 +87,9 @@ fun NewProductScreen(
     val selectedCategoryId = remember { mutableStateOf(inventoryData?.category?.categoryId) }
     var selectedImages by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val editState by editViewModel.uiState.collectAsStateWithLifecycle()
+
+    val isFromEdit = remember { mutableStateOf(inventoryData != null) }
 
     val isFormValid = title.value.isNotBlank()
             && price.value.toDoubleOrNull() != null
@@ -100,6 +105,15 @@ fun NewProductScreen(
 
     LaunchedEffect(uiState) {
         when (uiState) {
+            is UiState.Success -> Log.d("SuccessUpdate", "SuccessUpdate")
+            is UiState.SuccessUpdate ->  onSaveProduct()
+            is UiState.Error -> { /* Maybe show Snackbar here */ }
+            else -> Unit
+        }
+    }
+
+    LaunchedEffect(editState) {
+        when (editState) {
             is UiState.Success -> Log.d("SuccessUpdate", "SuccessUpdate")
             is UiState.SuccessUpdate ->  onSaveProduct()
             is UiState.Error -> { /* Maybe show Snackbar here */ }
@@ -145,6 +159,7 @@ fun NewProductScreen(
             title,
             focusRequester,
             isFocused,
+            isFromEdit,
             price,
             description,
             selectedCategoryId,
@@ -153,7 +168,9 @@ fun NewProductScreen(
             selectedImages,
             viewModel,
             isFormValid,
-            uiState
+            uiState,
+            inventoryData,
+            editViewModel
         )
     }
 
@@ -165,6 +182,7 @@ private fun AddInventoryComponent(
     title: MutableState<String>,
     focusRequester: FocusRequester,
     isFocused: Boolean,
+    isFromEdit: MutableState<Boolean>,
     price: MutableState<String>,
     description: MutableState<String>,
     selectedCategoryId: MutableState<Int?>,
@@ -173,7 +191,9 @@ private fun AddInventoryComponent(
     selectedImages: List<Uri>,
     viewModel: AddInventoryViewModel,
     isFormValid: Boolean,
-    uiState: UiState
+    uiState: UiState,
+    inventoryData: InventoryResponseItem?,
+    editViewModel: UpdateInventoryViewModel
 ) {
     var isFocused1 = isFocused
     Column(
@@ -230,7 +250,7 @@ private fun AddInventoryComponent(
         var categoryDropdownExpanded by remember { mutableStateOf(false) }
         Box {
             OutlinedTextField(
-                value = selectedCategoryId.toString(),
+                value = selectedCategoryId.value.toString(),
                 onValueChange = {},
                 label = { Text("Category") },
                 modifier = Modifier
@@ -292,7 +312,21 @@ private fun AddInventoryComponent(
                     categoryId = selectedCategoryId.value ?: 1,
                     images = arrayListOf("https://www.autoshippers.co.uk/blog/wp-content/uploads/bugatti-centodieci.jpg")
                 )
-                viewModel.addInventoryItems(inventoryRequest)
+                if (isFromEdit.value){
+                    inventoryData?.id?.let {
+                        editViewModel.updateInventoryItems(
+                            it,
+                            InventoryRequest(
+                                title = title.value,
+                                price = price.value.toDoubleOrNull() ?: 0.0,
+                                description = description.value,
+                                categoryId = selectedCategoryId.value ?: 1,
+                                images = arrayListOf("https://www.autoshippers.co.uk/blog/wp-content/uploads/bugatti-centodieci.jpg")
+                            ))
+                    }
+                }else{
+                    viewModel.addInventoryItems(inventoryRequest)
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
