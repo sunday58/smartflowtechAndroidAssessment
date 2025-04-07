@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -87,13 +88,14 @@ fun InventoryDetailScreen(
                 )
             )
         }
-    ){
-        DetailComponent(uiState, viewModel, onBackClick)
+    ){ paddingValues ->
+        DetailComponent(paddingValues, uiState, viewModel, onBackClick)
     }
 }
 
 @Composable
 private fun DetailComponent(
+    modifier: PaddingValues,
     uiState: UiState,
     viewModel: GetInventoryViewModel,
     onBackClick: () -> Unit

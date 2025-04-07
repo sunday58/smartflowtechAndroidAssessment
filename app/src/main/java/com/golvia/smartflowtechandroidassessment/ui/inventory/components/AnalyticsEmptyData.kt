@@ -54,7 +54,6 @@ fun AnalyticsEmptyField(
         style = TextStyle(
             fontSize = 16.sp,
             lineHeight = 18.sp,
-            fontFamily = FontFamily(),
             fontWeight = FontWeight(500),
             color = Black
         )
@@ -64,7 +63,6 @@ fun AnalyticsEmptyField(
         style = TextStyle(
             fontSize = 14.sp,
             lineHeight = 18.sp,
-            fontFamily = FontFamily(),
             fontWeight = FontWeight(400),
             color = Black
         )

@@ -44,6 +44,16 @@ fun InventoryScreen(
     }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+
+    LaunchedEffect(searchQuery) {
+        if (searchQuery.isNotEmpty()) {
+            viewModel.searchInventory(searchQuery)
+        } else {
+            viewModel.getInventoryItems()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -75,14 +85,15 @@ fun InventoryScreen(
 
                     is UiState.Success -> {
                         val inventoryData = state.data
-                        if (inventoryData.isNullOrEmpty()) {
+                        val isSearching = searchQuery.isNotEmpty()
+                        if (inventoryData.isNullOrEmpty() && !isSearching) {
                             EmptyStateMessage(
                                 message = stringResource(R.string.no_inventory_item_found_please_add_an_item),
                                 onRetryClick = { viewModel.getInventoryItems() }
                             )
                         } else {
                                 InventoryItem(
-                                    inventoryItem = inventoryData,
+                                    inventoryItem = inventoryData.orEmpty(),
                                     onSearch = { viewModel.searchInventory(it) },
                                     onItemClick = { onItemClick(it) },
                                     onFabClick = onAddItemClick

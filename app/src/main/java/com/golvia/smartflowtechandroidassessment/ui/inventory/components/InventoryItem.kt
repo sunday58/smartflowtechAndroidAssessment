@@ -111,6 +111,8 @@ fun InventoryItem(
                     ),
                     bottomLabel = stringResource(R.string.sales)
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
 

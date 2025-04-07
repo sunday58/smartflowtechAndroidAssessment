@@ -28,7 +28,7 @@ interface InventoryDao {
     @Query("DELETE FROM inventory_items")
     suspend fun clearAll()
 
-    @Query("SELECT * FROM inventory_items WHERE title LIKE :query")
+    @Query("SELECT * FROM inventory_items WHERE title LIKE '%' || :query || '%'")
     fun searchItemsByName(query: String): List<InventoryResponseItem>
 
     @Query("SELECT * FROM inventory_items WHERE id = :itemId")
