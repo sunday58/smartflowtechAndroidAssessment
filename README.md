@@ -81,12 +81,13 @@ cd inventory-analytics-compose](https://github.com/sunday58/smartflowtechAndroid
 
 The app uses a unified UiState sealed class to manage and observe loading, success, and error states in the UI:
 
-sealed class UiState {
+``` sealed class UiState {
     object Loading : UiState()
     data class Success(val data: List<InventoryResponseItem>) : UiState()
     data class SuccessUpdate(val data: InventoryDetailResponse) : UiState()
     data class Error(val message: String) : UiState()
 }
+```
 
 ## 📄 License
 
