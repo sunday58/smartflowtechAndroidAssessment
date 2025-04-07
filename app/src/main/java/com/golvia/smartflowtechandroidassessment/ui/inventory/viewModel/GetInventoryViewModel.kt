@@ -26,6 +26,9 @@ class GetInventoryViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
     init {
         getInventoryItems()
     }
@@ -46,6 +49,19 @@ class GetInventoryViewModel @Inject constructor(
                 _uiState.value = UiState.Error("Server error occurred: ${e.message}")
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Unknown error occurred")
+            }
+        }
+    }
+
+    fun searchInventory(query: String) {
+        _searchQuery.value = query
+        viewModelScope.launch {
+            try {
+                inventoryRepository.searchInventoryByName(query).collect { inventoryItems ->
+                    _uiState.value = UiState.Success(inventoryItems)
+                }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("Error occurred during search: ${e.message}")
             }
         }
     }

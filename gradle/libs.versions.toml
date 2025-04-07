@@ -24,6 +24,7 @@ retrofitVersion = "2.9.0"
 jacocoDep = "0.8.8"
 roomCompiler = "2.5.0"
 roomRuntime = "2.6.1"
+uiTestAndroid = "1.7.8"
 
 [libraries]
 accompanist-coil = { module = "com.google.accompanist:accompanist-coil", version.ref = "accompanistCoil" }
@@ -60,6 +61,7 @@ mockk-agent-jvm = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockkAge
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
 hilt-dep = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-complier = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

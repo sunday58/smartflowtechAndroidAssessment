@@ -5,8 +5,10 @@ import com.golvia.smartflowtechandroidassessment.data.InventoryRequest
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponse
 import com.golvia.smartflowtechandroidassessment.data.InventoryResponseItem
 import com.golvia.smartflowtechandroidassessment.data.db.database.InventoryDao
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import org.json.JSONObject
 import java.io.IOException
 import javax.inject.Inject
@@ -71,6 +73,13 @@ class InventoryRepositoryImpl @Inject constructor(
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
             throw mapError(response.code(), errorBody)
         }
+    }
+
+    override fun searchInventoryByName(query: String): Flow<List<InventoryResponseItem>> {
+        return flow {
+            val filteredItems = inventoryDao.searchItemsByName(query)
+            emit(filteredItems)
+        }.flowOn(Dispatchers.IO)
     }
 
     private fun mapError(code: Int, errorBody: String): Exception {

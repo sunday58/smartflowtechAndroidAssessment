@@ -5,6 +5,8 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.golvia.smartflowtechandroidassessment.data.db.typeConverter.StringListConverter
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 class InventoryResponse : ArrayList<InventoryResponseItem>()
@@ -26,10 +28,10 @@ data class InventoryResponseItem(
 
 @Parcelize
 data class Category(
-    val creationAt: String?,
-    val id: Int?,
+   @SerializedName("creationAt") val creation: String?,
+   @SerializedName("id") val categoryId: Int?,
     val image: String?,
     val name: String?,
-    val slug: String?,
-    val updatedAt: String?
+    @SerializedName("slug") val categorySlug: String?,
+    @SerializedName("updatedAt") val categoryUpdatedAt: String?
 ) : Parcelable
